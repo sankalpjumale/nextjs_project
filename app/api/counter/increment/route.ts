@@ -25,7 +25,7 @@ export async function POST() {
         }
 
         //incremen both the counts
-        record = await Counter.findByIdAndUpdate(
+        record = await Counter.findOneAndUpdate(
             {date: today},
             {$inc: {dailyCount: 1, totalCount: 1}},
             {new: true}
@@ -40,6 +40,7 @@ export async function POST() {
         )
 
     } catch (error) {
+        console.error("Increment error: ", error)
         return NextResponse.json(
             {error: "Filed to increment counter"},
             {status: 500}

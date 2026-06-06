@@ -10,10 +10,10 @@ export async function POST() {
         const today = format(new Date(), "yyyy-MM-dd")
 
         //reset only daily count
-        const record = await Counter.findByIdAndUpdate(
+        const record = await Counter.findOne(
             {date: today},
-            {$set: {dailyCount: 0}},
-            {new: true}
+            // {$set: {dailyCount: 0}},
+            // {new: true}
         )
 
         if(!record) {
@@ -22,6 +22,15 @@ export async function POST() {
                 {status: 404}
             )
         }
+
+        const updated = await Counter.findOneAndUpdate(
+            {date: today},
+            {
+                $inc: {totalCount: record.dailyCount},
+                $set: {dailyCount: 0}
+            },
+            {new: true}
+        )
 
         return NextResponse.json(
             {
